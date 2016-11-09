@@ -18,6 +18,8 @@ COORD CursorPosition; // used for goto
 
 void gotoXY(int,int); //function defined below
 
+void ClearScreen();
+
 int main () {
 
 	int menu_YN=1, aKey=0, x = 12;
@@ -43,6 +45,7 @@ int main () {
 		gotoXY(30,11); cout << "Is this correct?";
 		gotoXY(30,12); cout << "->Y";
 		gotoXY(32,13); cout << "N";
+		menu_YN=0;
 		while(running){
 			aKey=getch();
 			if (aKey==0 || aKey ==224)
@@ -62,6 +65,7 @@ int main () {
 				continue;
 			}
 			if(aKey =='\r') {
+				ClearScreen();
 				break;
 			}
 		}
@@ -81,3 +85,41 @@ void gotoXY(int x, int y) {
 	CursorPosition.Y = y;
 	SetConsoleCursorPosition(console,CursorPosition);
 }
+
+
+void ClearScreen()
+  {
+  HANDLE                     hStdOut;
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  DWORD                      count;
+  DWORD                      cellCount;
+  COORD                      homeCoords = { 0, 0 };
+
+  hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
+  if (hStdOut == INVALID_HANDLE_VALUE) return;
+
+  /* Get the number of cells in the current buffer */
+  if (!GetConsoleScreenBufferInfo( hStdOut, &csbi )) return;
+  cellCount = csbi.dwSize.X *csbi.dwSize.Y;
+
+  /* Fill the entire buffer with spaces */
+  if (!FillConsoleOutputCharacter(
+    hStdOut,
+    (TCHAR) ' ',
+    cellCount,
+    homeCoords,
+    &count
+    )) return;
+
+  /* Fill the entire buffer with the current colors and attributes */
+  if (!FillConsoleOutputAttribute(
+    hStdOut,
+    csbi.wAttributes,
+    cellCount,
+    homeCoords,
+    &count
+    )) return;
+
+  /* Move the cursor home */
+  SetConsoleCursorPosition( hStdOut, homeCoords );
+  }
