@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <string>
 #include <time.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -17,8 +18,10 @@ struct attributes {
 } player;
 
 player.level = 1;
+
 cout << "Welcome to RPG v0.1\n";
-while(confirmKey == 'N') {
+while(confirmKey != 'Y') {
+Sleep(2);
 cout << "What would you like to name your character?\n";
 cout << "Name: ";
 getline(cin,player.name);
