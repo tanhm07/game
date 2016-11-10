@@ -18,50 +18,51 @@ COORD CursorPosition; // used for goto
 
 void gotoXY(int,int); //function defined below
 
+struct playerInfo {
+	string name;
+	int level=1,STR=5,AGI=5,INT=5,VIT=5,LUK=5;
+} player;
+
+void printPlayerInfo(playerInfo pInfo);
+
 void ClearScreen();
+
 
 int main () {
 
-	int menu_YN=1, aKey=0, x = 12;
+	int menu_key=1, aKey=0, y = 12;
 
 	string str; 
 
 	bool running = true;
 
-	struct attributes {
-		string name;
-		int level;
-	} player;
-
-	player.level = 1;
-
-	gotoXY(30,7); cout << "Welcome to Custability Fighter v0.1";
-	while(menu_YN) {
-		Sleep(1000);
-		gotoXY(30,8); cout << "What would you like to name your character?";
-		gotoXY(30,9); cout << "Name: ";
+	gotoXY(0,7); cout << "Welcome to Custability Fighter v0.1";
+	Sleep(1000);
+	while(menu_key) {
+	gotoXY(0,8); cout << "What would you like to name your character?\n";
+		cout << "Name: ";
 		getline(cin,player.name);
-		gotoXY(30,10); cout << "Your character will be named " << player.name << ".";
-		gotoXY(30,11); cout << "Is this correct?";
-		gotoXY(30,12); cout << "->Y";
-		gotoXY(32,13); cout << "N";
-		menu_YN=0;
+		cout << "Your character will be named " << player.name << ".\n";
+		gotoXY(0,11); cout << "Is this correct?";
+		gotoXY(0,12); cout << "->Y";
+		gotoXY(2,13); cout << "N";
+		menu_key=0;
 		while(running){
 			aKey=getch();
 			if (aKey==0 || aKey ==224)
 				aKey=getch();
-			if(aKey == KEY_UP && x!=12) {
-				gotoXY(30,x); cout << "  ";
-				x--;
-				gotoXY(30,x); cout << "->";
-				menu_YN=0;
+			if(aKey == KEY_UP && y!=12) {
+				gotoXY(0,y); cout << "  ";
+				y--;
+				gotoXY(0,y); cout << "->";
+				menu_key=0;
 				continue;
 			}
-			if(aKey == KEY_DOWN && x!=13) {
-				gotoXY(30,x); cout << "  ";
-				x++;
-				gotoXY(30,x); cout << "->";
-				menu_YN=1;
+			if(aKey == KEY_DOWN && y!=13) {
+				gotoXY(0,y); cout << "  ";
+				y++;
+				gotoXY(0,y); cout << "->";
+				menu_key=1;
 				continue;
 			}
 			if(aKey =='\r') {
@@ -70,12 +71,49 @@ int main () {
 			}
 		}
 	}
-	cout << "Hi " << player.name << ".\n";
+	gotoXY(0,7); cout << "Hi " << player.name << ".\n";
 	Sleep(1000);
-	cout << "You are currently level: " << player.level <<".\n";
-	Sleep(2000);
-	cout << "Welcome to the world.\nExciting adventures await you once I update this program more.\n";
-	Sleep(2000);
+	y=9;
+	cout << "What would you like to do?\n";
+	cout << "->Character INFO\n";
+	gotoXY(2,10); cout <<  "EXIT";
+	menu_key=1;
+	while(running) {
+		aKey=getch();
+		if (aKey==0 || aKey ==224)
+				aKey=getch();
+		if (aKey==KEY_UP && y!=9) {
+			gotoXY(0,y); cout << "  ";
+			y--;
+			gotoXY(0,y); cout << "->";
+			menu_key--;
+			continue;
+		}
+		if (aKey==KEY_DOWN && y!=10) {
+			gotoXY(0,y); cout << "  ";
+			y++;
+			gotoXY(0,y); cout << "->";
+			menu_key++;
+			continue;
+		}
+		if (aKey=='\r') {
+			switch(menu_key) { 
+				case 1: {
+					gotoXY(0,13); printPlayerInfo(player);
+					break;
+				}
+				case 2: {
+					running = false;
+					gotoXY(0,13); 
+					for (int i=1;i<8;i++) {
+						cout << "						\n";
+					}
+				}
+			}
+		}
+	}
+	
+	gotoXY(0,13); cout << "Welcome to the world.\nExciting adventures await you once I update this program more.\n";
 	system("pause");
 	return 0;
 }
@@ -86,6 +124,15 @@ void gotoXY(int x, int y) {
 	SetConsoleCursorPosition(console,CursorPosition);
 }
 
+void printPlayerInfo(playerInfo pInfo) {
+	cout << "Name: " << pInfo.name << "\n";
+	cout << "Level: " << pInfo.level << "\n";
+	cout << "STR: " << pInfo.STR << "\n";
+	cout << "AGI: " << pInfo.AGI << "\n";
+	cout << "INT: " << pInfo.INT << "\n";
+	cout << "VIT: " << pInfo.VIT << "\n";
+	cout << "LUK: " << pInfo.LUK << "\n"; 
+}
 
 void ClearScreen()
   {
