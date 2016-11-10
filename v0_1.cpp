@@ -26,7 +26,7 @@ struct playerInfo {
 void printPlayerInfo(playerInfo pInfo);
 
 void ClearScreen();
-
+void hClrScr();
 
 int main () {
 
@@ -39,10 +39,10 @@ int main () {
 	gotoXY(0,7); cout << "Welcome to Custability Fighter v0.1";
 	Sleep(1000);
 	while(menu_key) {
-	gotoXY(0,8); cout << "What would you like to name your character?\n";
+	gotoXY(0,8); cout << "What would you like to name your Fighter?\n";
 		cout << "Name: ";
 		getline(cin,player.name);
-		cout << "Your character will be named " << player.name << ".\n";
+		cout << "Your Fighter will be named " << player.name << ".\n";
 		gotoXY(0,11); cout << "Is this correct?";
 		gotoXY(0,12); cout << "->Y";
 		gotoXY(2,13); cout << "N";
@@ -75,7 +75,7 @@ int main () {
 	Sleep(1000);
 	y=9;
 	cout << "What would you like to do?\n";
-	cout << "->Character INFO\n";
+	cout << "->Fighter INFO\n";
 	gotoXY(2,10); cout <<  "EXIT";
 	menu_key=1;
 	while(running) {
@@ -104,10 +104,7 @@ int main () {
 				}
 				case 2: {
 					running = false;
-					gotoXY(0,13); 
-					for (int i=1;i<8;i++) {
-						cout << "						\n";
-					}
+					hClrScr();
 				}
 			}
 		}
@@ -132,6 +129,13 @@ void printPlayerInfo(playerInfo pInfo) {
 	cout << "INT: " << pInfo.INT << "\n";
 	cout << "VIT: " << pInfo.VIT << "\n";
 	cout << "LUK: " << pInfo.LUK << "\n"; 
+}
+
+void hClrScr() {
+	gotoXY(0,13); 
+	for (int i=1;i<8;i++) {
+	cout << "						\n";
+	}
 }
 
 void ClearScreen()
