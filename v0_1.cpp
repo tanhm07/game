@@ -23,13 +23,23 @@ struct playerInfo {
 	int level=1,STR=5,AGI=5,INT=5,VIT=5,LUK=5;
 } player;
 
+struct monsterInfo {
+	string name;
+	int level,STR,AGI,INT,VIT,LUK;
+} slime;
+
 void printPlayerInfo(playerInfo pInfo);
+void printMonsterInfo(monsterInfo mInfo);
+void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL);
+
 
 void ClearScreen();
 void hClrScr();
 
 int main () {
 
+	srand (time(NULL));
+	
 	int menu_key=1, aKey=0, y = 12;
 
 	string str; 
@@ -76,7 +86,8 @@ int main () {
 	y=9;
 	cout << "What would you like to do?\n";
 	cout << "->Fighter INFO\n";
-	gotoXY(2,10); cout <<  "EXIT";
+	gotoXY(2,10); cout << "Monster INFO";
+	gotoXY(2,11); cout <<  "EXIT";
 	menu_key=1;
 	while(running) {
 		aKey=getch();
@@ -89,7 +100,7 @@ int main () {
 			menu_key--;
 			continue;
 		}
-		if (aKey==KEY_DOWN && y!=10) {
+		if (aKey==KEY_DOWN && y!=11) {
 			gotoXY(0,y); cout << "  ";
 			y++;
 			gotoXY(0,y); cout << "->";
@@ -99,17 +110,23 @@ int main () {
 		if (aKey=='\r') {
 			switch(menu_key) { 
 				case 1: {
+					hClrScr();
 					gotoXY(0,13); printPlayerInfo(player);
 					break;
 				}
 				case 2: {
+					hClrScr();
+					setMonsterInfo(slime,"slime",player.level);
+					gotoXY(0,13); printMonsterInfo(slime);
+					break;
+				}
+				case 3: {
 					running = false;
 					hClrScr();
 				}
 			}
 		}
 	}
-	
 	gotoXY(0,13); cout << "Welcome to the world.\nExciting adventures await you once I update this program more.\n";
 	system("pause");
 	return 0;
@@ -129,6 +146,26 @@ void printPlayerInfo(playerInfo pInfo) {
 	cout << "INT: " << pInfo.INT << "\n";
 	cout << "VIT: " << pInfo.VIT << "\n";
 	cout << "LUK: " << pInfo.LUK << "\n"; 
+}
+
+void printMonsterInfo(monsterInfo mInfo) {
+	cout << "Name: " << mInfo.name << "\n";
+	cout << "Level: " << mInfo.level << "\n";
+	cout << "STR: " << mInfo.STR << "\n";
+	cout << "AGI: " << mInfo.AGI << "\n";
+	cout << "INT: " << mInfo.INT << "\n";
+	cout << "VIT: " << mInfo.VIT << "\n";
+	cout << "LUK: " << mInfo.LUK << "\n"; 
+}
+
+void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL){
+	mInfo.name = mName;
+	mInfo.level = LVL;
+	mInfo.STR = LVL*(rand()%5+1);
+	mInfo.AGI = LVL*(rand()%5+1);
+	mInfo.INT = LVL*(rand()%5+1);
+	mInfo.VIT = LVL*(rand()%5+1);
+	mInfo.LUK = LVL*(rand()%5+1);
 }
 
 void hClrScr() {
