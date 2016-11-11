@@ -32,7 +32,7 @@ struct monsterInfo {
 void printPlayerInfo(playerInfo pInfo);
 void printMonsterInfo(monsterInfo mInfo);
 void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL);
-
+void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo);
 
 void ClearScreen();
 void hClrScr();
@@ -88,7 +88,8 @@ int main () {
 	cout << "What would you like to do?\n";
 	cout << "->Assign Fighter SP\n";
 	gotoXY(2,10); cout << "Monster INFO";
-	gotoXY(2,11); cout <<  "EXIT";
+	gotoXY(2,11); cout << "FIGHT Monster!";
+	gotoXY(2,12); cout <<  "EXIT";
 	menu_key=1;
 	while(running) {
 		aKey=getch();
@@ -101,7 +102,7 @@ int main () {
 			menu_key--;
 			continue;
 		}
-		if (aKey==KEY_DOWN && y!=11) {
+		if (aKey==KEY_DOWN && y!=12) {
 			gotoXY(0,y); cout << "  ";
 			y++;
 			gotoXY(0,y); cout << "->";
@@ -194,6 +195,11 @@ int main () {
 					break;
 				}
 				case 3: {
+					hClrScr();
+					gotoXY(0,13); Fight_PlayerMonster(player,slime);
+					break;
+				}
+				case 4: {
 					running = false;
 					hClrScr();
 				}
@@ -201,6 +207,7 @@ int main () {
 		}
 	}
 	gotoXY(0,13); cout << "Welcome to the world.\nExciting adventures await you once I update this program more.\n";
+	
 	system("pause");
 	return 0;
 }
@@ -242,7 +249,40 @@ void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL){
 	mInfo.INT = LVL*(rand()%5+1);
 	mInfo.VIT = LVL*(rand()%5+1);
 	mInfo.LUK = LVL*(rand()%5+1);
-	mInfo.HP = 5*mInfo.VIT;
+	mInfo.HP = 10*mInfo.VIT;
+}
+
+void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo) {
+	int player_DMG=0, monster_DMG=0;
+	
+	player_DMG=pInfo.STR+pInfo.INT;
+	monster_DMG=mInfo.STR+mInfo.INT;
+	
+	if (pInfo.HP <=0 ) {
+		cout << pInfo.name << " has lost!\n";
+	}
+	else if (mInfo.HP <= 0) { 
+		cout << mInfo.name << " has been defeated!\n";
+	}
+	else {
+		pInfo.HP=pInfo.HP-monster_DMG;
+		mInfo.HP=mInfo.HP-player_DMG;
+		
+		cout << pInfo.name << " did " << player_DMG << " DMG to " << mInfo.name << ".\n";
+		cout << mInfo.name << " did " << monster_DMG << " DMG to " << pInfo.name << ".\n";
+		cout << pInfo.name << " has " << pInfo.HP << " HP left.\n";
+		cout << mInfo.name << " has " << mInfo.HP << " HP left.\n";
+
+		if (pInfo.HP < 0) {
+			pInfo.HP = 0;
+			cout << pInfo.name << " has lost!\n";
+		}
+
+		if (mInfo.HP <0) {
+			mInfo.HP =0;
+			cout << mInfo.name << " has been defeated!\n";
+		}
+	}
 }
 
 void hClrScr() {
