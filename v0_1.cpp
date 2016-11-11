@@ -20,12 +20,13 @@ void gotoXY(int,int); //function defined below
 
 struct playerInfo {
 	string name;
-	int level=1,STR=5,AGI=5,INT=5,VIT=5,LUK=5;
+	int level=1,STR=1,AGI=1,INT=1,VIT=1,LUK=1;
+	int HP=10*VIT, SP=20;
 } player;
 
 struct monsterInfo {
 	string name;
-	int level,STR,AGI,INT,VIT,LUK;
+	int level,STR,AGI,INT,VIT,LUK,HP;
 } slime;
 
 void printPlayerInfo(playerInfo pInfo);
@@ -112,6 +113,7 @@ int main () {
 				case 1: {
 					hClrScr();
 					gotoXY(0,13); printPlayerInfo(player);
+					gotoXY(0,16); cout << "->";
 					break;
 				}
 				case 2: {
@@ -141,16 +143,19 @@ void gotoXY(int x, int y) {
 void printPlayerInfo(playerInfo pInfo) {
 	cout << "Name: " << pInfo.name << "\n";
 	cout << "Level: " << pInfo.level << "\n";
-	cout << "STR: " << pInfo.STR << "\n";
-	cout << "AGI: " << pInfo.AGI << "\n";
-	cout << "INT: " << pInfo.INT << "\n";
-	cout << "VIT: " << pInfo.VIT << "\n";
-	cout << "LUK: " << pInfo.LUK << "\n"; 
+	cout << "HP: " << pInfo.HP << " SP: " << pInfo.SP << "\n";
+	gotoXY(2,16); cout << "STR: " << pInfo.STR << "\n";
+	gotoXY(2,17); cout << "AGI: " << pInfo.AGI << "\n";
+	gotoXY(2,18); cout << "INT: " << pInfo.INT << "\n";
+	gotoXY(2,19); cout << "VIT: " << pInfo.VIT << "\n";
+	gotoXY(2,20); cout << "LUK: " << pInfo.LUK << "\n"; 
+	
 }
 
 void printMonsterInfo(monsterInfo mInfo) {
 	cout << "Name: " << mInfo.name << "\n";
 	cout << "Level: " << mInfo.level << "\n";
+	cout << "HP: " << mInfo.HP << "\n";
 	cout << "STR: " << mInfo.STR << "\n";
 	cout << "AGI: " << mInfo.AGI << "\n";
 	cout << "INT: " << mInfo.INT << "\n";
@@ -166,11 +171,12 @@ void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL){
 	mInfo.INT = LVL*(rand()%5+1);
 	mInfo.VIT = LVL*(rand()%5+1);
 	mInfo.LUK = LVL*(rand()%5+1);
+	mInfo.HP = 5*mInfo.VIT;
 }
 
 void hClrScr() {
 	gotoXY(0,13); 
-	for (int i=1;i<8;i++) {
+	for (int i=1;i<10;i++) {
 	cout << "						\n";
 	}
 }
