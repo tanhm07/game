@@ -86,7 +86,7 @@ int main () {
 	Sleep(1000);
 	y=9;
 	cout << "What would you like to do?\n";
-	cout << "->Fighter INFO\n";
+	cout << "->Assign Fighter SP\n";
 	gotoXY(2,10); cout << "Monster INFO";
 	gotoXY(2,11); cout <<  "EXIT";
 	menu_key=1;
@@ -112,8 +112,79 @@ int main () {
 			switch(menu_key) { 
 				case 1: {
 					hClrScr();
-					gotoXY(0,13); printPlayerInfo(player);
+					printPlayerInfo(player);
+					cout << "  DONE";
 					gotoXY(0,16); cout << "->";
+					int SP_menukey=1, SP_y=16;
+					bool SP_running =true;
+					while (SP_running){
+						aKey=getch();
+						if (aKey==0 || aKey ==224)
+							aKey=getch();
+						if (aKey==KEY_UP && SP_y!=16) {
+							gotoXY(0,SP_y); cout << "  ";
+							SP_y--;
+							gotoXY(0,SP_y); cout << "->";
+							SP_menukey--;
+							continue;
+						}
+						if (aKey==KEY_DOWN && SP_y!=21) {
+							gotoXY(0,SP_y); cout << "  ";
+							SP_y++;
+							gotoXY(0,SP_y); cout << "->";
+							SP_menukey++;
+							continue;
+						}
+						if (aKey=='\r') {
+							switch(SP_menukey) {
+								case 1: {
+									if (player.SP >0){
+										player.STR++;
+										player.SP--;
+										printPlayerInfo(player);
+									}
+									break;
+								}
+								case 2: {
+									if (player.SP >0){
+										player.AGI++;
+										player.SP--;
+										printPlayerInfo(player);
+									}
+									break;
+								}
+								case 3: {
+									if (player.SP >0){
+										player.INT++;
+										player.SP--;
+										printPlayerInfo(player);
+									}
+									break;
+								}
+								case 4: {
+									if (player.SP >0){
+										player.VIT++;
+										player.SP--;
+										player.HP = 10*player.VIT;
+										printPlayerInfo(player);
+									}
+									break;
+								}
+								case 5: {
+									if (player.SP >0){
+										player.LUK++;
+										player.SP--;
+										printPlayerInfo(player);
+									}
+									break;
+								}
+								case 6: {
+									hClrScr();
+									SP_running=false;
+								}
+							}
+						}
+					}
 					break;
 				}
 				case 2: {
@@ -141,9 +212,9 @@ void gotoXY(int x, int y) {
 }
 
 void printPlayerInfo(playerInfo pInfo) {
-	cout << "Name: " << pInfo.name << "\n";
+	gotoXY(0,13); cout << "Name: " << pInfo.name << "\n";
 	cout << "Level: " << pInfo.level << "\n";
-	cout << "HP: " << pInfo.HP << " SP: " << pInfo.SP << "\n";
+	cout << "HP: " << pInfo.HP << " SP: " << pInfo.SP << "     \n";
 	gotoXY(2,16); cout << "STR: " << pInfo.STR << "\n";
 	gotoXY(2,17); cout << "AGI: " << pInfo.AGI << "\n";
 	gotoXY(2,18); cout << "INT: " << pInfo.INT << "\n";
