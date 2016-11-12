@@ -21,13 +21,14 @@ void gotoXY(int,int); //function defined below
 struct playerInfo {
 	string name;
 	int level=1,STR=1,AGI=1,INT=1,VIT=1,LUK=1;
-	int HP=10*VIT, SP=20;
+	int HP=10*VIT, SP=20, EXP=0, MAX_EXP=20;
+	bool LVL_UP=false;
 } player;
 
 struct monsterInfo {
 	string name;
 	int level,STR,AGI,INT,VIT,LUK,HP;
-} slime;
+} monster;
 
 void printPlayerInfo(playerInfo pInfo);
 void printMonsterInfo(monsterInfo mInfo);
@@ -87,7 +88,7 @@ int main () {
 	y=9;
 	cout << "What would you like to do?\n";
 	cout << "->Assign Fighter SP\n";
-	gotoXY(2,10); cout << "Monster INFO";
+	gotoXY(2,10); cout << "FIND Monster";
 	gotoXY(2,11); cout << "FIGHT Monster!";
 	gotoXY(2,12); cout <<  "EXIT";
 	menu_key=1;
@@ -190,13 +191,15 @@ int main () {
 				}
 				case 2: {
 					hClrScr();
-					setMonsterInfo(slime,"slime",player.level);
-					gotoXY(0,13); printMonsterInfo(slime);
+					player.HP=10*player.VIT;
+					player.LVL_UP=false;
+					setMonsterInfo(monster,"slime",player.level);
+					gotoXY(0,13); printMonsterInfo(monster);
 					break;
 				}
 				case 3: {
 					hClrScr();
-					gotoXY(0,13); Fight_PlayerMonster(player,slime);
+					gotoXY(0,13); Fight_PlayerMonster(player,monster);
 					break;
 				}
 				case 4: {
@@ -220,7 +223,7 @@ void gotoXY(int x, int y) {
 
 void printPlayerInfo(playerInfo pInfo) {
 	gotoXY(0,13); cout << "Name: " << pInfo.name << "\n";
-	cout << "Level: " << pInfo.level << "\n";
+	cout << "Level: " << pInfo.level << " EXP: " << pInfo.EXP << "/" << pInfo.MAX_EXP <<"\n";
 	cout << "HP: " << pInfo.HP << " SP: " << pInfo.SP << "     \n";
 	gotoXY(2,16); cout << "STR: " << pInfo.STR << "\n";
 	gotoXY(2,17); cout << "AGI: " << pInfo.AGI << "\n";
@@ -243,26 +246,30 @@ void printMonsterInfo(monsterInfo mInfo) {
 
 void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL){
 	mInfo.name = mName;
-	mInfo.level = LVL;
-	mInfo.STR = LVL*(rand()%5+1);
-	mInfo.AGI = LVL*(rand()%5+1);
-	mInfo.INT = LVL*(rand()%5+1);
-	mInfo.VIT = LVL*(rand()%5+1);
-	mInfo.LUK = LVL*(rand()%5+1);
+	mInfo.level = rand()%LVL+1;
+	mInfo.STR = mInfo.level*(rand()%5+1);
+	mInfo.AGI = mInfo.level*(rand()%5+1);
+	mInfo.INT = mInfo.level*(rand()%5+1);
+	mInfo.VIT = mInfo.level*(rand()%5+1);
+	mInfo.LUK = mInfo.level*(rand()%5+1);
 	mInfo.HP = 10*mInfo.VIT;
 }
 
 void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo) {
-	int player_DMG=0, monster_DMG=0;
+	int player_DMG=0, monster_DMG=0, EXP_EARN = (mInfo.STR + mInfo.INT + mInfo.AGI + mInfo.VIT + mInfo.LUK)/5;
 	
-	player_DMG=pInfo.STR+pInfo.INT;
-	monster_DMG=mInfo.STR+mInfo.INT;
+	player_DMG=(rand()%pInfo.STR+rand()%pInfo.INT+2)/(rand()%(mInfo.STR+mInfo.INT)+1)*pInfo.AGI/mInfo.AGI;
+	monster_DMG=(rand()%mInfo.STR+rand()%mInfo.INT+2)/(rand()%(pInfo.STR+pInfo.INT)+1)*mInfo.AGI/pInfo.AGI;
 	
 	if (pInfo.HP <=0 ) {
 		cout << pInfo.name << " has lost!\n";
 	}
 	else if (mInfo.HP <= 0) { 
 		cout << mInfo.name << " has been defeated!\n";
+		cout << pInfo.name << " earned " << EXP_EARN << " EXP.\n"; 
+		if (pInfo.LVL_UP == true) {
+			cout << pInfo.name << " LEVEL UP!";
+		}
 	}
 	else {
 		pInfo.HP=pInfo.HP-monster_DMG;
@@ -273,14 +280,25 @@ void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo) {
 		cout << pInfo.name << " has " << pInfo.HP << " HP left.\n";
 		cout << mInfo.name << " has " << mInfo.HP << " HP left.\n";
 
-		if (pInfo.HP < 0) {
+		if (pInfo.HP <= 0) {
 			pInfo.HP = 0;
 			cout << pInfo.name << " has lost!\n";
 		}
 
-		if (mInfo.HP <0) {
+		if (mInfo.HP <= 0) {
 			mInfo.HP =0;
 			cout << mInfo.name << " has been defeated!\n";
+			pInfo.EXP = pInfo.EXP + EXP_EARN;
+			cout << pInfo.name << " earned " << EXP_EARN << " EXP.\n"; 
+			if (pInfo.EXP >= pInfo.MAX_EXP) {
+				pInfo.EXP = pInfo.EXP - pInfo.MAX_EXP;
+				pInfo.level++;
+				pInfo.SP = pInfo.SP + 20;
+				pInfo.LVL_UP = true;
+			}
+			if (pInfo.LVL_UP == true) {
+				cout << pInfo.name << " LEVEL UP!";
+			}
 		}
 	}
 }
