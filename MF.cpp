@@ -21,7 +21,7 @@ void gotoXY(int,int); //function defined below
 struct playerInfo {
 	string name;
 	int level=1,STR=1,AGI=1,INT=1,VIT=1,LUK=1;
-	int HP=10*VIT, SP=20, EXP=0, MAX_EXP=20;
+	int HP=10*VIT, SP=20, EXP=0, MAX_EXP=10;
 	bool LVL_UP=false;
 } player;
 
@@ -48,7 +48,7 @@ int main () {
 
 	bool running = true;
 
-	gotoXY(0,7); cout << "Welcome to Custability Fighter v0.1";
+	gotoXY(0,7); cout << "Welcome to MONSTER FIGHTER v0.9";
 	Sleep(1000);
 	while(menu_key) {
 	gotoXY(0,8); cout << "What would you like to name your Fighter?\n";
@@ -209,7 +209,7 @@ int main () {
 			}
 		}
 	}
-	gotoXY(0,13); cout << "Welcome to the world.\nExciting adventures await you once I update this program more.\n";
+	gotoXY(0,13); cout << "Thanks for playing MONSTER FIGHTER!\n";
 	
 	system("pause");
 	return 0;
@@ -258,8 +258,8 @@ void setMonsterInfo(monsterInfo& mInfo, string mName, int LVL){
 void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo) {
 	int player_DMG=0, monster_DMG=0, EXP_EARN = (mInfo.STR + mInfo.INT + mInfo.AGI + mInfo.VIT + mInfo.LUK)/5;
 	
-	player_DMG=(rand()%pInfo.STR+rand()%pInfo.INT+2)/(rand()%(mInfo.STR+mInfo.INT)+1)*pInfo.AGI/mInfo.AGI;
-	monster_DMG=(rand()%mInfo.STR+rand()%mInfo.INT+2)/(rand()%(pInfo.STR+pInfo.INT)+1)*mInfo.AGI/pInfo.AGI;
+	player_DMG=rand()%(2*pInfo.STR+pInfo.INT)+(pInfo.AGI/2)+1;
+	monster_DMG=rand()%mInfo.STR+rand()%mInfo.INT+rand()%mInfo.AGI+mInfo.level;
 	
 	if (pInfo.HP <=0 ) {
 		cout << pInfo.name << " has lost!\n";
@@ -272,19 +272,32 @@ void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo) {
 		}
 	}
 	else {
-		pInfo.HP=pInfo.HP-monster_DMG;
-		mInfo.HP=mInfo.HP-player_DMG;
 		
-		cout << pInfo.name << " did " << player_DMG << " DMG to " << mInfo.name << ".\n";
-		cout << mInfo.name << " did " << monster_DMG << " DMG to " << pInfo.name << ".\n";
+		if (rand()%(pInfo.AGI+mInfo.AGI+pInfo.level)+1 <= pInfo.AGI+pInfo.level) {
+			mInfo.HP=mInfo.HP-player_DMG;
+			cout << pInfo.name << " did " << player_DMG << " DMG to " << mInfo.name << ".\n";
+		}
+		else {
+			cout << pInfo.name << " MISSED.\n";
+		}
+		
+		if (rand()%(pInfo.AGI+pInfo.level+mInfo.AGI)+1 <= mInfo.AGI+mInfo.level) {
+			pInfo.HP=pInfo.HP-monster_DMG;
+			cout << mInfo.name << " did " << monster_DMG << " DMG to " << pInfo.name << ".\n";
+		}
+		else {
+			cout << mInfo.name << " MISSED.\n";
+		}
+				
 		cout << pInfo.name << " has " << pInfo.HP << " HP left.\n";
 		cout << mInfo.name << " has " << mInfo.HP << " HP left.\n";
-
+		
 		if (pInfo.HP <= 0) {
 			pInfo.HP = 0;
 			cout << pInfo.name << " has lost!\n";
 		}
-
+		
+		// player gains EXP if monster is defeated
 		if (mInfo.HP <= 0) {
 			mInfo.HP =0;
 			cout << mInfo.name << " has been defeated!\n";
@@ -293,7 +306,8 @@ void Fight_PlayerMonster(playerInfo& pInfo, monsterInfo& mInfo) {
 			if (pInfo.EXP >= pInfo.MAX_EXP) {
 				pInfo.EXP = pInfo.EXP - pInfo.MAX_EXP;
 				pInfo.level++;
-				pInfo.SP = pInfo.SP + 20;
+				pInfo.MAX_EXP = 1.1*pInfo.MAX_EXP;
+				pInfo.SP = pInfo.SP + 10 + pInfo.INT/4;
 				pInfo.LVL_UP = true;
 			}
 			if (pInfo.LVL_UP == true) {
